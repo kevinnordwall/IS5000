@@ -19,6 +19,13 @@
   #
   # Please add your own code below this line
   #
+ 
+	.data
+	.align 2
+mytime:	.word 0x5957
+timstr:	.ascii "text more text lots of text\0"
+	.text
+	
 .global delay
 .global time2string
 hexasc:

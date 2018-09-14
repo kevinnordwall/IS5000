@@ -13,7 +13,7 @@ loop:
 
 	addi	$s0,$s0,3	# what happens if the constant is changed?
 	
-	li	$t0,0x5d
+	li	$t0,0x5d	# Had to chanvge the ending value
 	bne	$s0,$t0,loop
 	nop			# delay slot filler (just in case)
 
