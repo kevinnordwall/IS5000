@@ -28,6 +28,7 @@ timstr:	.ascii "text more text lots of text\0"
 	
 .global delay
 .global time2string
+
 hexasc:
 	andi $t0,$a0,0xf
 	slti $t1,$t0,10
@@ -62,8 +63,8 @@ while:
 	
 	 
 for:
-	
-	slti $t3, $t2, 4711
+	li $t4, 4350000
+	slt $t3, $t2, $t4
 	addi $t2,$t2,1
 	bnez $t3,for
 	nop
@@ -81,37 +82,68 @@ whileEnd:
 
 time2string:
 	PUSH $ra
+	PUSH $a0
+	PUSH $a1
 
-	move $t2,$a0 # Moving address to temp var.
+	move $s0,$a0 # Moving address to temp var.
+	move $s1,$a1
 	
-	andi $a0,$a1,0xf000
+	andi $a0,$s1,0xf000
 	srl $a0,$a0,12
 	jal hexasc
 	nop
-	sb $v0, 0($t2)
+	sb $v0, 0($s0)
 	
-	andi $a0,$a1,0xf00
+	andi $a0,$s1,0xf00
 	srl $a0,$a0,8
 	jal hexasc
 	nop
-	sb $v0, 1($t2)
+	sb $v0, 1($s0)
 	
-	andi $a0,$a1,0xf0
+	andi $a0,$s1,0xf0
 	srl $a0,$a0,4
 	jal hexasc
 	nop
-	sb $v0, 3($t2)
+	sb $v0, 3($s0)
 	
-	andi $a0,$a1,0xf
+	andi $a0,$s1,0xf
+	beq $a0,2,equalTwo
+	nop
 	jal hexasc
 	nop
-	sb $v0, 4($t2)
+	sb $v0, 4($s0)
+	
+	#andi $a0,$a1,0xf
+	#jal hexasc
+	#nop
+	#sb $v0, 4($t2)
 	
 	addi $t1,$0,0x3A #COLON
 	addi $t3,$0,0x00 #NULLBYTE
-	sb $t1,2($t2)
-	sb $t3,5($t2)
+	sb $t1,2($s0)
+	sb $t3,5($s0)
 	
+	POP $a1
+	POP $a0
+	POP $ra
+	jr $ra
+	nop
+	
+equalTwo:
+	li $t4, 0x54
+	li $t5, 0x57
+	li $t6, 0x4f
+	sb $t4, 4($s0)
+	sb $t5, 5($s0)
+	sb $t6, 6($s0)
+	
+	addi $t1,$0,0x3A #COLON
+	addi $t3,$0,0x00 #NULLBYTE
+	sb $t1,2($s0)
+	sb $t3,7($s0)
+	
+	POP $a1
+	POP $a0
 	POP $ra
 	jr $ra
 	nop
