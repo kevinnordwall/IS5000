@@ -5,6 +5,7 @@
 /* Writer: Kevin Nordwall
  * Analyzer: Andreas Gunnahr
  * */
+
 #define COLUMNS 6
 int counter = 0;
 
@@ -19,38 +20,58 @@ void print_number( const int n )
 
 void print_sieves(const int n)
 {
- 	int array[n];
-	for( int i = 0; i < n; i++)
-		array[i] = 1;
+ 	char array[8000];
+	for( int i = 0; i < 8000; i++)
+		array[i] = '0';
 	
-	for( int i = 2; i < sqrt(n); i++)
+	for( int i = 2; i < sqrt(8000); i++)
 	{
-		if (array[i])
+		if (array[i] == '0')
 		{
-			for( int j = i*i; j < n; j += i)
+			for( int j = i*i; j < 8000; j += i)
 			{
-				array[j] = 0;
+				array[j] = '1';
 			}
 
 		}
 	}
-
-	for( int i = 2; i < n; i++)
+	
+	for(int j = 0; j < 8000; j++)
 	{
-		if(array[i])
+		if(array[j] == '0' && j!= 0 && j!=1)
+			counter++;
+		if(counter == n)
+		{
+			printf("%10d\n", j);
+			break;
+		}
+	}
+
+	/*for( int i = 2; i < n; i++)
+	{
+		if(array[i] == '0')
 		{
 			print_number(i);
 			counter++;
 		}
-	}
+	}*/
  }
+
+
+void nth_sieves(const int n)
+{
+	print_sieves(n);
+
+}
+
 
 // 'argc' contains the number of program arguments, and
 // 'argv' is an array of char pointers, where each
 // char pointer points to a null-terminated string.
 int main(int argc, char *argv[]){
   if(argc == 2)
-    print_sieves(atoi(argv[1]));
+	  nth_sieves(atoi(argv[1]));
+	//	print_sieves(atoi(argv[1]));
   else
     printf("Please state an integer number.\n");
 

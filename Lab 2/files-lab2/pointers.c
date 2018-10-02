@@ -10,18 +10,30 @@ int list1[80];
 int list2[80];
 
 
-void copy_codes( char **a0, int *a1, int *a2)
+void copy_codes( char *text, int *list, int *count)
 {
-	// finish yo
+	
+	while(*text != '\0')
+	{
+		char temp = *text;
+		*list = (int) temp;
+
+		list++;
+		*count = *count + 1; 
+		text++;
+	}
+
 }
 
 
 void work()
 {
-	char **a0 = &text1;
-	int *a1 = list1;
-	int *a2 = &count;
-	copy_codes( a0, a1, a2 );
+	int *l1 = list1;
+	copy_codes( text1, l1, &count );
+
+	int *l2 = list2;
+	copy_codes( text2, l2, &count);
+	
 
 }
 
@@ -35,8 +47,8 @@ void printlist(const int* lst){
 }
 
 void endian_proof(const char* c){
-  printf("\nEndian experiment: 0x%02x,0x%02x,0x%02x,0x%02x\n", 
-         (int)*c,(int)*(c+1), (int)*(c+2), (int)*(c+3));
+  printf("\nEndian experiment: 0x%02x,0x%02x,0x%02x,0x%02x,0x%02x\n", 
+         (int)*c,(int)*(c+1), (int)*(c+2), (int)*(c+3), (int)*(c+4));
   
 }
 
