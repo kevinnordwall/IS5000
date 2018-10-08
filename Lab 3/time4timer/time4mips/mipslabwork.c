@@ -15,10 +15,9 @@
 #include "mipslab.h"  /* Declatations for these labs */
 
 int mytime = 0x5957;
-
 char textstring[] = "text, more text, and even more text!";
-
 volatile int* porte = (volatile int*) 0xbf886110;
+int timeoutcount = 0;
 
 /* Interrupt Service Routine */
 void user_isr( void )
@@ -29,6 +28,8 @@ void user_isr( void )
 /* Lab-specific initialization goes here */
 void labinit( void )
 {
+	*porte = (int) 0x0;
+
 	// C
 	// Create volatile pointer that points to address of TRISE (0xbf886100)
 	// Change bits 7 to 0 to 0, which sets the 8 bits to output for Port E
@@ -36,8 +37,7 @@ void labinit( void )
 	volatile int* trise =(volatile int*) 0xbf886100;
 	int maskE = 0xffffff00;
 	*trise = *trise & maskE;
-
-	*porte = (int) 0x0;
+	
 
 
 	// F
@@ -48,11 +48,17 @@ void labinit( void )
 	int maskD = 0xfe0;
 	TRISD |= maskD;
 	
+
+	PR2 = 31250; // 80MHz / 256 / 10	to get under 60k
+	T2CONSET = 0x70; // Init T2CON to prescaling 1:32
+	T2CONSET = 0x8000; // Starts the timer, 1000 0000 0000 0000
+
 }
 
 /* This function is called repetitively from the main program */
 void labwork( void )
 {
+	// Highest possible value for 16-bits: 65535
 	// Lastly iterate value of Port E by 1
 	int buttons = getbtns( );
 	int switches = getsw( );
@@ -73,12 +79,24 @@ void labwork( void )
 		mytime &= 0xff0f;
 		mytime |= ( switches << 4 );
 	}
-	
-	delay( 1000 );
-	time2string( textstring, mytime );
-  	display_string( 3, textstring );
-  	display_update();
-  	tick( &mytime );
+
+	if( IFS(0) & 0x100 )
+	{
+		timeoutcount++;
+		IFSCLR(0) = 0x100;
+	}
+
+
+	if ( timeoutcount == 10 )
+	{
+		time2string( textstring, mytime );
+		display_string( 3, textstring );
+		display_update();
+		tick( &mytime );
+		*porte = *porte + 1;
+		timeoutcount = 0;
+	}
+
   	display_image(96, icon);
-	*porte = *porte + 1;
+	
 }
