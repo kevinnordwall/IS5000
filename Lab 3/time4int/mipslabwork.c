@@ -24,6 +24,12 @@ int prime = 1234567;
 /* Interrupt Service Routine */
 void user_isr( void ) 
 {
+	if ( IFS(0) & 0x8000 ) // 1000 0000 0000 0000 => 0x8000
+	{
+		IFSCLR(0) = 0x8000;
+		*porte += 1;
+	}
+
 	if( IFS(0) & 0x100 )
 	{
 		IFSCLR(0) = 0x100;
@@ -36,7 +42,6 @@ void user_isr( void )
 		display_string( 3, textstring );
 		display_update();
 		tick( &mytime );
-		*porte += 1;
 		timeoutcount = 0;
 	}
 }
@@ -67,11 +72,13 @@ void labinit( void )
 	T2CON = 0x0; // Stop timer and clear control register.
 
 	IPCSET(2) = 0x1f; // Set priority level to 7 and sub-priority level to 3 (highest for both)
-	IFSCLR(0) = 0x100; // Clears the timer 2 interrupt flag
-	IECSET(0) = 0x100; // Enables the timer 2 interrupt
+	IPCSET(3) = 0x1f; // Set priority level to 7 and sub-priority level to 3 (highest for both)
+	IFSCLR(0) = 0x8100; // Clears the timer 2 and external interrupt flag
+	IECSET(0) = 0x8100; // Enables the timer 2 interrupt and external interrupt 3
+
 
 	PR2 = 31250; // 80MHz / 256 / 10	to get under 60k
-	T2CONSET = 0x70; // Init T2CON to prescaling 1:32
+	T2CONSET = 0x70; // Init T2CON to prescaling 1:256
 	T2CONSET = 0x8000; // Starts the timer, 1000 0000 0000 0000
 
 	enable_interrupt();

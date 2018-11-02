@@ -49,8 +49,9 @@ void labinit( void )
 	TRISD |= maskD;
 	
 
+	// Assignment 2
 	PR2 = 31250; // 80MHz / 256 / 10	to get under 60k
-	T2CONSET = 0x70; // Init T2CON to prescaling 1:32
+	T2CONSET = 0x70; // Init T2CON to prescaling 1:256, bits 6-4 to 111
 	T2CONSET = 0x8000; // Starts the timer, 1000 0000 0000 0000
 
 }

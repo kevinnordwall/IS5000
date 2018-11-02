@@ -9,7 +9,6 @@ int getsw(void)
 	// SW4 - 11, etc...
 	// 1111 0000 0000
 	// 0xf00
-	// Return 0x4321
 	int switches = (PORTD & 0xf00) >> 8;
 
 	return switches;
@@ -17,6 +16,7 @@ int getsw(void)
 
 int getbtns(void)
 {
+	// Get the bits 7 to 5.
 	// 1110 0000
 	// 0xe0
 	int buttons = (PORTD & 0xe0) >> 5;

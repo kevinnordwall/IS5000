@@ -31,11 +31,12 @@ void labinit( void )
 {
 	// C
 	// Create volatile pointer that points to address of TRISE (0xbf886100)
-	// Change bits 7 to 0 to 0, which sets the 8 bits to output for Port E
+	// Change bits 7 to 0, to 0. Which sets the 8 bits to output for Port E
 	// DO NOT change the other bits at the address of TRISE
+
 	volatile int* trise =(volatile int*) 0xbf886100;
 	int maskE = 0xffffff00;
-	*trise = *trise & maskE;
+	*trise = *trise & maskE; 
 
 	*porte = (int) 0x0;
 
@@ -56,19 +57,19 @@ void labwork( void )
 	// Lastly iterate value of Port E by 1
 	int buttons = getbtns( );
 	int switches = getsw( );
-	if( (buttons & 0x4) )
+	if( (buttons & 0x4) ) // Check if btn 4 is pressed down
 	{
 		mytime &= 0x0fff; // Set byte 4 to 0 in mytime with bitwise and
 		mytime |= ( switches << 12 ); // Move switch bits 12 bits left, place switch values into mytime using bitwise or
 	}
 
-	if( (buttons & 0x2) )
+	if( (buttons & 0x2) ) // Check if btn 3 is pressed down
 	{
-		mytime &= 0xf0ff;
+		mytime &= 0xf0ff; 
 		mytime |= ( switches << 8 );
 	}
 
-	if( (buttons & 0x1) )
+	if( (buttons & 0x1) ) // Check if btn 2 is pressed down
 	{
 		mytime &= 0xff0f;
 		mytime |= ( switches << 4 );

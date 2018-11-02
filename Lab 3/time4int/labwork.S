@@ -85,6 +85,8 @@ time2string:
 	PUSH $ra
 	PUSH $a0
 	PUSH $a1
+	PUSH $s0
+	PUSH $s1
 
 	move $s0,$a0 # Moving address to temp var.
 	move $s1,$a1
@@ -124,6 +126,8 @@ time2string:
 	sb $t1,2($s0)
 	sb $t3,5($s0)
 	
+	POP $s1
+	POP $s0
 	POP $a1
 	POP $a0
 	POP $ra
@@ -143,6 +147,8 @@ equalTwo:
 	sb $t1,2($s0)
 	sb $t3,7($s0)
 	
+	POP $s1
+	POP $s0
 	POP $a1
 	POP $a0
 	POP $ra
