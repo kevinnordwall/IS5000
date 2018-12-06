@@ -3,45 +3,9 @@
 #include <stdio.h>
 #include <stddef.h>
 
-// node_t * snake_xhead = NULL;
-// node_t * snake_yhead = NULL;
 int snake_x[512] = {0};
 int snake_y[512] = {0};
-int pixel_quantity;
 Snake snake;
-
-// Linked list helpers
-// int remove_last(node_t * head) {
-//     int retval = 0;
-//     /* if there is only one item in the list, remove it */
-//     if (head->next == NULL) {
-//         retval = head->val;
-//         free(head);
-//         return retval;
-//     }
-
-//     /* get to the second to last node in the list */
-//     node_t * current = head;
-//     while (current->next->next != NULL) {
-//         current = current->next;
-//     }
-
-//     /* now current points to the second to last item of the list, so let's remove current->next */
-//     retval = current->next->val;
-//     free(current->next);
-//     current->next = NULL;
-//     return retval;
-
-// }
-
-// void push(node_t ** head, int val) {
-//     node_t * new_node;
-//     new_node = malloc(sizeof(node_t));
-
-//     new_node->val = val;
-//     new_node->next = *head;
-//     *head = new_node;
-// }
 
 // Sätter gränser för spelplan
 void border_init(void)
@@ -71,7 +35,6 @@ void snake_init(Snake *snake)
         snake_y[i] = 0;
         erase_pixel(snake_x[i],snake_y[i]);
     }
-    // pixel_quantity = 1;
 }
 
 void change_direc(Snake *snake, int btn_1, int btn_2)
@@ -98,38 +61,18 @@ void game_init(void)
     border_init();
     // Skapa orm
     snake_init(&snake);
-
-    // Skapa mat
 }
-
-// void draw_snake(node_t * xhead, node_t * yhead)
-// {
-//     node_t * x_current = xhead;
-//     node_t * y_current = yhead;
-//     int i = 0;
-//     while (x_current != NULL) {
-//         int x = x_current->val;
-//         int y = y_current->val;
-//         draw_pixel(x,y);
-//         if(i > 1)
-//         {
-//             border[x][y] = 1;
-//         }
-//         x_current = x_current->next;
-//         y_current = y_current->next;
-//         i++;
-//     }
-// }
 
 void update_snake(Snake *snake)
 {
+    // HIGH SPEED och LOW SPEED är essentiellt bara en delay i denna funktion.
     delay(speed);
     int x = (*snake).x;
     int y = (*snake).y;
     int length = (*snake).length;
     int i;
 
-    if((*snake).direction == UP) y--;
+    if((*snake).direction == UP) y--; // Eftersom (0,0) är längst upp till vänster på skärmen är UP en minskning i y-led
     if((*snake).direction == DOWN) y++;
     if((*snake).direction == RIGHT) x++;
     if((*snake).direction == LEFT) x--;
@@ -145,7 +88,7 @@ void update_snake(Snake *snake)
     snake_y[0] = y;
     draw_pixel(x,y);
     // push ny position
-    for( i = 1; i < length; i++ )
+    for( i = 1; i < length; i++ ) // Ful lösning då inte linked list finns på pic32
     {
         sec_tempx = snake_x[i];
         sec_tempy = snake_y[i];
@@ -159,19 +102,6 @@ void update_snake(Snake *snake)
     }
     border[first_tempx][first_tempy] = 0;
     erase_pixel(first_tempx,first_tempy);
-
-    // kollar om längden på ormen > snake.length
-    // if( pixel_quantity > length )
-    // {
-    //     // om så är fallet pop
-    //     int x_last = remove_last(snake_xhead);
-    //     int y_last = remove_last(snake_yhead);
-        
-    //     pixel_quantity--;
-    // }
-    // rita
-    // draw_snake(snake_xhead,snake_yhead);
-    
 }
 
 void restart(void) {

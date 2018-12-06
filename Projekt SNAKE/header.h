@@ -28,8 +28,6 @@ extern uint8_t settings_screen[512];
 
 void configuration(void);
 void display_init(void);
-void display_string(int line, char *s);
-void display_update(void);
 void pixel_update(uint8_t *pix);
 void erase_pixel(int x, int y);
 void spi_send_recv(uint8_t data);
